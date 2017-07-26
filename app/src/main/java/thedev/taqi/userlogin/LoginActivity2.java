@@ -1,5 +1,6 @@
 package thedev.taqi.userlogin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -24,6 +25,8 @@ public class LoginActivity2 extends AppCompatActivity {
     private EditText txtEmail;
     private EditText txtPassword;
     private Button btnLogin;
+    Button btnLogout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +38,11 @@ public class LoginActivity2 extends AppCompatActivity {
         this.txtPassword = (EditText) findViewById(R.id.txtPassword);
         this.btnLogin = (Button) findViewById(R.id.btnLogin);
 
-        // register events
-        EventBus.getDefault().register(this);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Put credentials to login", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -59,18 +59,35 @@ public class LoginActivity2 extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // register events
+        EventBus.getDefault().register(this);
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Unregister eventbus
+        EventBus.getDefault().unregister(this);
+    }
 
     @Subscribe
-    public void onLoginPressed(LoginEvent event) {
+    public void onLoginPressed(LoginEvent event) throws JSONException {
         JSONObject jsonObject = event.getResponse();
+        finish();
         try {
             boolean success = jsonObject.getBoolean("success");
-            Pref.savePreference(this, Pref.KEY_LOGIN_SUCCESS, success);
-            Toast.makeText(this,"Login Successful!",Toast.LENGTH_LONG).show();
+            Pref.savePreference(this, Pref.KEY_LOGGEDIN, success);
+            Pref.savePreference(this, Pref.KEY_EMAIL, event.getEmail());
+            Toast.makeText(this, "Login Successful!", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(this, BasicInfoPage.class));
         } catch (JSONException e) {
             Log.e("JSON_PARSE_ERR", e.toString());
+
         }
+
     }
 
 
@@ -80,5 +97,8 @@ public class LoginActivity2 extends AppCompatActivity {
                         && !txtEmail.getText().toString().isEmpty()
                         && txtPassword != null
                         && !txtPassword.getText().toString().isEmpty();
+
     }
+
+
 }

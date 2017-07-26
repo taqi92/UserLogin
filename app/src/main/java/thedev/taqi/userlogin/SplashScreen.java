@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import thedev.taqi.userlogin.commons.SessionManager;
+
 public class SplashScreen extends Activity {
 
 
@@ -12,8 +14,8 @@ public class SplashScreen extends Activity {
     private static int SPLASH_TIME_OUT = 2000;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle savedInpubstanceState) {
+        super.onCreate(savedInpubstanceState);
         setContentView(R.layout.splashxml);
 
         new Handler().postDelayed(new Runnable() {
@@ -26,8 +28,12 @@ public class SplashScreen extends Activity {
             @Override
             public void run() {
 
-                Intent i = new Intent(SplashScreen.this, LoginActivity2.class);
-                startActivity(i);
+                Intent intent;
+                if (SessionManager.isLoggedIn(SplashScreen.this))
+                    intent = new Intent(SplashScreen.this, BasicInfoPage.class);
+                else
+                    intent = new Intent(SplashScreen.this, LoginActivity2.class);
+                startActivity(intent);
 
                 // close this activity
                 finish();
@@ -35,7 +41,7 @@ public class SplashScreen extends Activity {
         }, SPLASH_TIME_OUT);
 
 
-
     }
 }
+
 

@@ -12,4 +12,8 @@ public final class ApiEndpoints {
 
     public static String BASE_URL = "http://54.218.102.254";
     public static String ENDPOINT_LOGIN = "/scarecrow/json.php";
+
+
+    public static String BASE_URL2 = "http://54.218.102.254";
+    public static String ENDPOINT_INFO = "/scarecrow/json.php";
 }

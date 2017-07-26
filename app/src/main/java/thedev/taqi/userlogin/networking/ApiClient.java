@@ -23,7 +23,7 @@ public final class ApiClient {
     private ApiClient(){
     }
 
-    public static void login(Context context, String email, String password){
+    public static void login(Context context, final String email, String password){
         AndroidNetworking.post(ApiEndpoints.BASE_URL+ApiEndpoints.ENDPOINT_LOGIN)
                 .addBodyParameter("tag", "login")
                 .addBodyParameter("email", email)
@@ -38,7 +38,30 @@ public final class ApiClient {
 
                         Log.i("LOGIN_RESPONSE","Initiated");
                         Log.i("LOGIN_RESPONSE",response.toString());
-                        EventBus.getDefault().post(new LoginEvent(response));
+                        EventBus.getDefault().post(new LoginEvent(response,email));
+
+                    }
+                    @Override
+                    public void onError(ANError error) {
+                        // handle error
+                        Log.i("LOGIN_ERROR","Error");
+                        Log.i("LOGIN_ERROR",error.getErrorDetail());
+
+                    }
+                });
+    }
+
+
+    public static void getResources(Context context){
+        AndroidNetworking.post(ApiEndpoints.BASE_URL2+ApiEndpoints.ENDPOINT_INFO)
+                .addBodyParameter("tag", "getData")
+                .setTag("test2")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
 
                     }
                     @Override
